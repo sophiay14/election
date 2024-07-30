@@ -1,0 +1,16 @@
+---
+title: "Political Office Longevity"
+author: "Sophia Yao"
+format: html
+execute: 
+  echo: false
+---
+
+```{r}
+#| label: setup
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(primer.data)
+```
