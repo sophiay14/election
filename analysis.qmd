@@ -4,13 +4,42 @@ author: "Sophia Yao"
 format: html
 execute: 
   echo: false
+  warning: false
 ---
 
 ```{r}
 #| label: setup
-#| warning: false
 #| message: false
-
 library(tidyverse)
 library(primer.data)
+library(brms)
+library(tidybayes)
+library(gtsummary)
+
+x <- governors |> 
+  select(death_age, party,  win_margin) |>
+  mutate(treatment = ifelse(win_margin > 0, "win", "lose")) |> 
+  filter(abs(win_margin) < 5) |> 
+  drop_na()
 ```
+
+```{r}
+#| label: brm model
+#| cache: true
+
+fit_elec_1 <- brm(formula = death_age ~ treatment + win_margin +
+                  party,
+                  data = x,
+                  family = gaussian(),
+                  refresh = 0,
+                  silent = 2,
+                  seed = 9)
+
+fixef(fit_elec_1)
+tbl_regression(fit_elec_1)
+```
+
+$$
+death\_age = \beta_{0} + \beta_{1} treatment_i + \beta_{2}win\_margin_i + \\
+\beta_{4}repub_i + \beta_{5}thirdparty_i + \epsilon_{i}
+$$
